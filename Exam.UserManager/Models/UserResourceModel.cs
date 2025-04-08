@@ -1,6 +1,6 @@
-﻿namespace Exam.UserManager.Service
+﻿namespace Exam.UserManager.Models
 {
-    public class UserDTO
+    public class UserResourceModel
     {
         public string Id { get; set; }
         public string UserName { get; set; }

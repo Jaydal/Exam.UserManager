@@ -7,7 +7,7 @@ namespace Exam.UserManager.Service.Automapper
     {
         public UserMapperProfile()
         {
-            CreateMap<UserModel, UserDTO>().ReverseMap();
+            CreateMap<UserDTO, UserModel>().ReverseMap();
         }
     }
 }

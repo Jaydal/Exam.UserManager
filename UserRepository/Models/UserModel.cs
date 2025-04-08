@@ -1,11 +1,11 @@
-﻿using LiteDB;
+﻿using SQLite;
 
 namespace Exam.UserManager.Repository.Models
 {
     public class UserModel
     {
-        [BsonId]
-        public int Id { get; set; }
+        [PrimaryKey]
+        public string Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
