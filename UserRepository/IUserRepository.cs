@@ -6,7 +6,7 @@ namespace Exam.UserManager.Repository
     {
         string Add(UserModel user);
         IEnumerable<UserModel> Get();
-        UserModel Get(int id);
+        UserModel Get(string id);
         bool Update(UserModel user);
     }
 }

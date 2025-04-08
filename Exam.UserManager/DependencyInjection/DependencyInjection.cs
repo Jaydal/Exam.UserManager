@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Exam.UserManager.Repository;
 using Exam.UserManager.Service;
-using Exam.UserManager.Service.Automapper;
 using Exam.UserManager.Service.Security;
-using LiteDB;
+using SQLite;
 
 namespace Exam.UserManager.DependencyInjection
 {
@@ -11,10 +10,10 @@ namespace Exam.UserManager.DependencyInjection
     {
         public static IServiceCollection AddUserManagerServices(this IServiceCollection services)
         {
-            services.AddSingleton<ILiteDatabase>(sp =>
+            services.AddSingleton<ISQLiteConnection>(sp =>
             {
                 var dbPath = Path.Combine(AppContext.BaseDirectory, "UserManager.db");
-                return new LiteDatabase(dbPath);
+                return new SQLiteConnection(dbPath);
             });
 
             services.AddScoped<IUserPermission, UserPermission>();
@@ -23,7 +22,8 @@ namespace Exam.UserManager.DependencyInjection
             services.AddScoped<IUserWriteService, UserWriteService>();
             
             var config = new MapperConfiguration(c => {
-                c.AddProfile<UserMapperProfile>();
+                c.AddProfile<Service.Automapper.UserMapperProfile>();
+                c.AddProfile<UserManager.Automapper.UserMapperProfile>();
             });
             services.AddSingleton<IMapper>(s => config.CreateMapper());
 

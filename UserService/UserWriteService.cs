@@ -34,15 +34,23 @@ namespace Exam.UserManager.Service
             if (_userPermission.CanWrite())
             {
                 //TODO Item 2: Implement the logic to update user
+                UserModel user = _mapper.Map<UserModel>(userDto);
+                bool result = _userRepository.Update(user);
+                return result;
             }
             throw new ArgumentException("Permission not allowed!");
         }
 
-        public bool Delete(int id)
+        public bool Delete(string id)
         {
             if (_userPermission.CanWrite())
             {
                 //TODO Item 3: Implement the logic to delete user
+                // Update isActive to false, instead of deleting the user
+                UserModel user = _userRepository.Get(id);
+                user.IsActive = false;
+                bool result = _userRepository.Update(user);
+                return result;
             }
             throw new ArgumentException("Permission not allowed!");
         }

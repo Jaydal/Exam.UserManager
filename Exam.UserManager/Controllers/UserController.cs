@@ -1,3 +1,5 @@
+using AutoMapper;
+using Exam.UserManager.Models;
 using Exam.UserManager.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,19 +11,24 @@ namespace Exam.UserManager.Controllers
     {
         private readonly IUserQueryService _userQueryService;
         private readonly IUserWriteService _userWriteService;
-        public UserController(IUserQueryService userQueryService, IUserWriteService userWriteService)
+        private readonly IMapper _mapper;
+
+        public UserController(IUserQueryService userQueryService, IUserWriteService userWriteService, IMapper mapper)
         {
             _userQueryService = userQueryService;
             _userWriteService = userWriteService;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(string id)
         {
             try
             {
                 //TODO: Item 4: Implement the logic to get user by id
-                return Ok();
+                UserDTO user = _userQueryService.Get(id);
+                UserResourceModel mapped = _mapper.Map<UserResourceModel>(user);
+                return Ok(mapped);
             }
             catch (ArgumentException ex)
             {
@@ -34,8 +41,17 @@ namespace Exam.UserManager.Controllers
         {
             try
             {
-                var users = _userQueryService.GetAll();
-                return Ok(users);
+                IEnumerable<UserDTO> users = _userQueryService.GetAll();
+               
+                if(users == null || !users.Any())
+                {
+                    return NotFound();
+                }
+
+                IEnumerable<UserResourceModel> mapped = 
+                    _mapper.Map<IEnumerable<UserResourceModel>>(users);
+
+                return Ok(mapped);
             }
             catch (ArgumentException ex)
             {
@@ -44,13 +60,14 @@ namespace Exam.UserManager.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] UserDTO userDto)
+        public IActionResult Add([FromBody] CreateUserModel user)
         {
             try
             {
                 //TODO: Item 5: Implement the logic to add user
-                var userId = "assign value";
-                return CreatedAtAction(nameof(Get), new { id = userId }, userDto);
+                UserDTO mapped = _mapper.Map<UserDTO>(user);
+                string userId = _userWriteService.Add(mapped);
+                return CreatedAtAction(nameof(Get), new { id = userId }, user);
             }
             catch (ArgumentException ex)
             {
@@ -59,17 +76,18 @@ namespace Exam.UserManager.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] UserDTO userDto)
+        public IActionResult Update(string id, [FromBody] UserResourceModel user)
         {
             try
             {
-                userDto.Id = id;
+                user.Id = id;
                 //TODO Item 6: Implement the logic to update user
-                //var result = _userWriteService
-                //if (result)
-                //{
-                //    return NoContent();
-                //}
+                UserDTO mapped = _mapper.Map<UserDTO>(user);
+                bool result = _userWriteService.Update(mapped);
+                if (result)
+                {
+                    return NoContent();
+                }
                 return NotFound();
             }
             catch (ArgumentException ex)
@@ -79,16 +97,16 @@ namespace Exam.UserManager.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             try
             {
                 //TODO Item 7: Implement the logic to delete user
-                //var result = _userWriteService
-                //if (result)
-                //{
-                //    return NoContent();
-                //}
+                var result = _userWriteService.Delete(id);
+                if (result)
+                {
+                    return NoContent();
+                }
                 return NotFound();
             }
             catch (ArgumentException ex)

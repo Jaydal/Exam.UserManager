@@ -3,7 +3,7 @@
     public interface IUserWriteService
     {
         string Add(UserDTO userDto);
-        bool Delete(int id);
+        bool Delete(string id);
         bool Update(UserDTO userDto);
     }
 }

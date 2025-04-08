@@ -1,37 +1,46 @@
 ﻿using Exam.UserManager.Repository.Models;
-using LiteDB;
 using Microsoft.Extensions.Configuration;
+using SQLite;
 
 namespace Exam.UserManager.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ILiteCollection<UserModel> _userCollection;
+        private readonly TableQuery<UserModel> _userTable;
+        private readonly ISQLiteConnection _db;
 
-        public UserRepository(ILiteDatabase database, IConfiguration configuration)
+        public UserRepository(ISQLiteConnection db, IConfiguration configuration)
         {
-            string collectionName = configuration.GetSection("Database:UserCollectionName").Value ?? "Users";
-            _userCollection = database.GetCollection<UserModel>(collectionName);
+            _db = db;
+            _db.CreateTable<UserModel>();
+            _userTable = _db.Table<UserModel>();
         }
 
-        public UserModel Get(int id)
+        public UserModel Get(string id)
         {
-            return _userCollection.FindById(id);
+            return _userTable.Where(user=>user.Id.Equals(id)).FirstOrDefault();
         }
 
         public IEnumerable<UserModel> Get()
         {
-            return _userCollection.FindAll();
+            return _userTable.Where(user => true);
         }
 
         public string Add(UserModel user)
         {
-            return _userCollection.Insert(user);
+            if (user.Id == null)
+            {
+                user.Id = Guid.NewGuid().ToString();
+            }
+
+            _db.Insert(user);
+
+            return user.Id;
         }
 
         public bool Update(UserModel user)
         {
-            return _userCollection.Update(user);
+            return _db.Update(user) > 0;
         }
     }
 }

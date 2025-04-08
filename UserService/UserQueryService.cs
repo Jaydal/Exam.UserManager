@@ -18,11 +18,17 @@ namespace Exam.UserManager.Service
             _mapper = mapper;
         }
 
-        public UserDTO Get(int id)
+        public UserDTO Get(string id)
         {
             if (_userPermission.CanRead())
             {
                 UserModel user = _userRepository.Get(id);
+
+                if (user == null)
+                {
+                    return null;
+                }
+
                 UserDTO userDto = _mapper.Map<UserDTO>(user);
                 return userDto;
             }
@@ -32,8 +38,20 @@ namespace Exam.UserManager.Service
 
         public IEnumerable<UserDTO> GetAll()
         {
-            //TODO Item 1: Implement the logic to get all users
-            throw new NotImplementedException();
+            if (_userPermission.CanRead())
+            {
+                IEnumerable<UserModel> user = _userRepository.Get();
+                
+                if(user == null || !user.Any())
+                {
+                    return Enumerable.Empty<UserDTO>();
+                }
+
+                IEnumerable<UserDTO> userDto = _mapper.Map<IEnumerable<UserDTO>>(user);
+                return userDto;
+            }
+
+            throw new ArgumentException("Permission not allowed!");
         }
     }
 }
