@@ -33,9 +33,13 @@ namespace Exam.UserManager.Service
         {
             if (_userPermission.CanWrite())
             {
-                //TODO Item 2: Implement the logic to update user
                 UserModel user = _mapper.Map<UserModel>(userDto);
-                bool result = _userRepository.Update(user);
+
+                //***
+                //TODO Item 2: Implement the logic to update user
+                bool result = false; //result of update from user repository
+                //***
+
                 return result;
             }
             throw new ArgumentException("Permission not allowed!");
@@ -45,11 +49,16 @@ namespace Exam.UserManager.Service
         {
             if (_userPermission.CanWrite())
             {
+                //***
                 //TODO Item 3: Implement the logic to delete user
                 // Update isActive to false, instead of deleting the user
                 UserModel user = _userRepository.Get(id);
+                //what if user is not existing?
                 user.IsActive = false;
-                bool result = _userRepository.Update(user);
+
+                bool result = false; //result of update from user repository
+                //***
+
                 return result;
             }
             throw new ArgumentException("Permission not allowed!");

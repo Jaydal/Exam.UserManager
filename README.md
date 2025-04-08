@@ -9,7 +9,7 @@ This project contains incomplete code that you need to finish as part of the exa
 1. Clone this repository to your local machine.
 2. Open the project in your preferred code editor.
 3. Search for all `TODO` comments in the codebase.
-4. Complete the code as instructed in each TODO comment.
+4. Complete the code as instructed in each TODO comment. (You may refactor any parts of the code)
 5. Test your API with Postman or Swagger, make sure to update the appsettings for the Security before testing:
 ```json
   "Security": {
@@ -33,5 +33,6 @@ This project contains incomplete code that you need to finish as part of the exa
 - API is working overall (10pts)
 - Effort :D (5pts)
 
+Once completed, please call the attention of the instructor to review your work. Make sure to provide any necessary documentation or comments in your code to explain your thought process and decisions.
 
 Good luck!

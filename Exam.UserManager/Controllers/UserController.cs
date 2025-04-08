@@ -25,8 +25,10 @@ namespace Exam.UserManager.Controllers
         {
             try
             {
+                //***
                 //TODO: Item 4: Implement the logic to get user by id
-                UserDTO user = _userQueryService.Get(id);
+                UserDTO user = new UserDTO(); //must invoke userQueryService
+                //***
                 UserResourceModel mapped = _mapper.Map<UserResourceModel>(user);
                 return Ok(mapped);
             }
@@ -64,9 +66,11 @@ namespace Exam.UserManager.Controllers
         {
             try
             {
+                //***
                 //TODO: Item 5: Implement the logic to add user
                 UserDTO mapped = _mapper.Map<UserDTO>(user);
-                string userId = _userWriteService.Add(mapped);
+                string userId = "some ID from the userWriteService";
+                //***
                 return CreatedAtAction(nameof(Get), new { id = userId }, user);
             }
             catch (ArgumentException ex)
@@ -81,9 +85,11 @@ namespace Exam.UserManager.Controllers
             try
             {
                 user.Id = id;
+                //***
                 //TODO Item 6: Implement the logic to update user
                 UserDTO mapped = _mapper.Map<UserDTO>(user);
-                bool result = _userWriteService.Update(mapped);
+                bool result = false; //result of update from userWriteService
+                //***
                 if (result)
                 {
                     return NoContent();
@@ -101,12 +107,11 @@ namespace Exam.UserManager.Controllers
         {
             try
             {
+                //***
                 //TODO Item 7: Implement the logic to delete user
                 var result = _userWriteService.Delete(id);
-                if (result)
-                {
-                    return NoContent();
-                }
+                //I need to return 200 or 204 if the user is deleted successfully
+                //***
                 return NotFound();
             }
             catch (ArgumentException ex)
